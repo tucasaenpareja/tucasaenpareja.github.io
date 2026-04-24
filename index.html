@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="description" content="ParejaFinance AI — Tu asesora financiera para comprar vuestra primera vivienda">
+<title>ParejaFinance AI</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface2: #1c1c26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #f0efe8;
+  --text2: #9997a0;
+  --text3: #5a5865;
+  --accent: #c8a96e;
+  --accent2: #e8c98e;
+  --blue: #4a9eff;
+  --green: #4ecb8d;
+  --red: #ff6b6b;
+  --amber: #ffb84d;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.header {
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: var(--accent);
+  letter-spacing: -0.3px;
+}
+.logo span { color: var(--text2); font-size: 13px; font-family: 'DM Sans', sans-serif; display: block; font-weight: 300; }
+.header-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+}
+
+/* NAV */
+.nav {
+  display: flex;
+  gap: 6px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+.nav-btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 50px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.nav-btn.active {
+  background: var(--accent);
+  color: #0a0a0f;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+/* SECTIONS */
+.section { display: none; padding: 0 20px; }
+.section.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 12px;
+}
+.card-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 14px;
+}
+
+/* METRIC GRID */
+.metric-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.metric {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  border: 1px solid var(--border);
+}
+.metric-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.8px; }
+.metric-value { font-size: 20px; font-weight: 600; color: var(--text); }
+.metric-value.green { color: var(--green); }
+.metric-value.amber { color: var(--amber); }
+.metric-value.red { color: var(--red); }
+.metric-value.accent { color: var(--accent); }
+
+/* PROGRESS */
+.progress-wrap { margin: 16px 0 8px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text2); margin-bottom: 8px; }
+.progress-bar { height: 6px; background: var(--surface2); border-radius: 10px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.6s ease; }
+
+/* SEMAFORO */
+.semaforo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+.semaforo.verde { background: rgba(78,203,141,0.1); color: var(--green); border: 1px solid rgba(78,203,141,0.2); }
+.semaforo.amarillo { background: rgba(255,184,77,0.1); color: var(--amber); border: 1px solid rgba(255,184,77,0.2); }
+.semaforo.rojo { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+.semaforo-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.semaforo.verde .semaforo-dot { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.semaforo.amarillo .semaforo-dot { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.semaforo.rojo .semaforo-dot { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+/* INPUTS */
+.input-group { margin-bottom: 12px; }
+.input-group label { display: block; font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.input-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.input-group input:focus { border-color: var(--accent); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* ROWS */
+.row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.row:last-child { border-bottom: none; }
+.row-label { color: var(--text2); }
+.row-value { font-weight: 500; color: var(--text); }
+.row-input {
+  width: 90px; padding: 6px 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  text-align: right;
+  outline: none;
+}
+.row-input:focus { border-color: var(--accent); }
+
+/* TAGS */
+.tag {
+  display: inline-block; padding: 3px 10px;
+  border-radius: 50px; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.tag.blue { background: rgba(74,158,255,0.15); color: var(--blue); }
+.tag.green { background: rgba(78,203,141,0.15); color: var(--green); }
+.tag.amber { background: rgba(255,184,77,0.15); color: var(--amber); }
+
+/* CALENDAR */
+.cal-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.cal-month {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cal-month:hover { border-color: var(--accent); }
+.cal-month.done { background: rgba(78,203,141,0.1); border-color: rgba(78,203,141,0.3); }
+.cal-month.current { border-color: var(--accent); background: rgba(200,169,110,0.08); }
+.cal-name { font-size: 11px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+.cal-amount { font-size: 13px; font-weight: 600; color: var(--text); }
+.cal-check { font-size: 16px; margin-top: 2px; }
+
+/* CHAT */
+.chat-msgs {
+  height: 300px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 10px;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.msg {
+  padding: 12px 14px;
+  border-radius: 16px;
+  max-width: 88%;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.msg.user {
+  background: var(--accent);
+  color: #0a0a0f;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  font-weight: 500;
+}
+.msg.ai {
+  background: var(--surface2);
+  color: var(--text);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--border);
+}
+.msg.loading { color: var(--text2); font-style: italic; }
+.chat-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.chat-input-row input {
+  flex: 1; padding: 12px 14px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 50px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+.chat-input-row input:focus { border-color: var(--accent); }
+.chat-send {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.chat-send:hover { background: var(--accent2); }
+.quick-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.quick-btn {
+  padding: 7px 12px;
+  border-radius: 50px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.quick-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 100%; max-width: 480px;
+  background: rgba(10,10,15,0.95);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 12px;
+  z-index: 100;
+}
+.bottom-btn {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  background: none; border: none; cursor: pointer;
+  padding: 6px 0;
+  transition: all 0.2s;
+}
+.bottom-btn .icon { font-size: 20px; }
+.bottom-btn .label { font-size: 10px; color: var(--text3); font-family: 'DM Sans', sans-serif; }
+.bottom-btn.active .label { color: var(--accent); }
+.bottom-btn.active .icon { filter: drop-shadow(0 0 4px var(--accent)); }
+
+/* HERO CARD */
+.hero-card {
+  background: linear-gradient(135deg, #1a1508 0%, #13131a 60%);
+  border: 1px solid rgba(200,169,110,0.2);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute; top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,169,110,0.12) 0%, transparent 70%);
+}
+.hero-label { font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 8px; }
+.hero-value { font-family: 'DM Serif Display', serif; font-size: 42px; color: var(--text); line-height: 1; margin-bottom: 4px; }
+.hero-sub { font-size: 13px; color: var(--text2); }
+
+/* STRATEGY ITEMS */
+.strategy-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.strategy-item:last-child { border-bottom: none; }
+.strategy-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+.strategy-title { font-size: 14px; font-weight: 500; margin-bottom: 2px; }
+.strategy-sub { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+/* SECTION HEADING */
+.section-heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: 26px;
+  color: var(--text);
+  padding: 20px 20px 4px;
+  line-height: 1.2;
+}
+.section-sub {
+  font-size: 13px;
+  color: var(--text2);
+  padding: 0 20px 16px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.section.active { animation: fadeIn 0.25s ease; }
+
+/* HIPOTECA ALERT */
+.h-alert {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+.h-alert.ok { background: rgba(78,203,141,0.1); color: var(--green); border: 1px solid rgba(78,203,141,0.2); }
+.h-alert.warn { background: rgba(255,107,107,0.1); color: var(--red); border: 1px solid rgba(255,107,107,0.2); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">
+    ParejaFinance
+    <span>Asesora financiera IA</span>
+  </div>
+  <div class="header-dot"></div>
+</div>
+
+<div class="nav">
+  <button class="nav-btn active" onclick="show('objetivo',this)">Objetivo</button>
+  <button class="nav-btn" onclick="show('ingresos',this)">Ingresos</button>
+  <button class="nav-btn" onclick="show('gastos',this)">Gastos</button>
+  <button class="nav-btn" onclick="show('ahorro',this)">Ahorro</button>
+  <button class="nav-btn" onclick="show('calendario',this)">Calendario</button>
+  <button class="nav-btn" onclick="show('hipoteca',this)">Hipoteca</button>
+  <button class="nav-btn" onclick="show('ia',this)">Chat IA</button>
+</div>
+
+<!-- OBJETIVO -->
+<div id="sec-objetivo" class="section active">
+  <div id="semaforo" class="semaforo verde">
+    <div class="semaforo-dot"></div>
+    <span id="semaforo-txt">Vais bien este mes, seguid así</span>
+  </div>
+
+  <div class="hero-card">
+    <div class="hero-label">Meta vivienda</div>
+    <div class="hero-value" id="h-meta">40.000€</div>
+    <div class="hero-sub">Fecha estimada: <strong id="h-fecha" style="color:var(--accent)">Sep 2030</strong></div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">Ahorrado</div>
+      <div class="metric-value green" id="m-ahorrado">8.200 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Faltan</div>
+      <div class="metric-value amber" id="m-faltan">31.800 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Ahorro/mes</div>
+      <div class="metric-value accent" id="m-mensual">600 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Meses</div>
+      <div class="metric-value" id="m-meses">53</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="progress-label">
+      <span>Progreso hacia vuestra casa</span>
+      <span id="m-pct" style="color:var(--accent);font-weight:600;">20,5%</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:20.5%"></div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Ajustar objetivo</div>
+    <div class="two-col">
+      <div class="input-group">
+        <label>Meta entrada (€)</label>
+        <input type="number" id="i-meta" value="40000" oninput="recalcular()">
+      </div>
+      <div class="input-group">
+        <label>Ya ahorrado (€)</label>
+        <input type="number" id="i-ahorrado" value="8200" oninput="recalcular()">
+      </div>
+    </div>
+    <div class="input-group">
+      <label>Ahorro mensual conjunto (€)</label>
+      <input type="number" id="i-mensual" value="600" oninput="recalcular()">
+    </div>
+  </div>
+</div>
+
+<!-- INGRESOS -->
+<div id="sec-ingresos" class="section">
+  <div class="metric-grid">
+    <div class="metric" style="grid-column:1/-1;">
+      <div class="metric-label">Ingresos totales</div>
+      <div class="metric-value green" id="ing-total">3.800 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label" id="ing-label1">Persona 1</div>
+      <div class="metric-value" id="ing-display1">2.200 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label" id="ing-label2">Persona 2</div>
+      <div class="metric-value" id="ing-display2">1.600 €</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Registrar ingresos</div>
+    <div class="two-col">
+      <div class="input-group">
+        <label>Nombre persona 1</label>
+        <input type="text" id="n1" value="Ana" oninput="actualizarIngresos()">
+      </div>
+      <div class="input-group">
+        <label>Salario neto (€)</label>
+        <input type="number" id="s1" value="2200" oninput="actualizarIngresos()">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="input-group">
+        <label>Nombre persona 2</label>
+        <input type="text" id="n2" value="Carlos" oninput="actualizarIngresos()">
+      </div>
+      <div class="input-group">
+        <label>Salario neto (€)</label>
+        <input type="number" id="s2" value="1600" oninput="actualizarIngresos()">
+      </div>
+    </div>
+    <div class="input-group">
+      <label>Otros ingresos (€)</label>
+      <input type="number" id="s-otros" value="0" oninput="actualizarIngresos()">
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Distribución proporcional del ahorro</div>
+    <div class="row"><span class="row-label">Porcentaje persona 1</span><span class="row-value" id="pct1">57,9%</span></div>
+    <div class="row"><span class="row-label">Porcentaje persona 2</span><span class="row-value" id="pct2">42,1%</span></div>
+    <div class="row"><span class="row-label">Aportación P1 al ahorro</span><span class="row-value green" id="aport1">347 €</span></div>
+    <div class="row"><span class="row-label">Aportación P2 al ahorro</span><span class="row-value green" id="aport2">253 €</span></div>
+  </div>
+</div>
+
+<!-- GASTOS -->
+<div id="sec-gastos" class="section">
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">Total gastos</div>
+      <div class="metric-value red" id="g-total">3.000 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Disponible</div>
+      <div class="metric-value green" id="g-disponible">800 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">% gastado</div>
+      <div class="metric-value amber" id="g-ratio">78,9%</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">% ahorrado</div>
+      <div class="metric-value green" id="g-pct-ahorro">21,1%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Categorías de gasto mensual</div>
+    <div class="row"><span class="row-label">Vivienda (alquiler)</span><input class="row-input" type="number" id="g-viv" value="900" oninput="actualizarGastos()"></div>
+    <div class="row"><span class="row-label">Alimentación</span><input class="row-input" type="number" id="g-ali" value="500" oninput="actualizarGastos()"></div>
+    <div class="row"><span class="row-label">Transporte</span><input class="row-input" type="number" id="g-tra" value="300" oninput="actualizarGastos()"></div>
+    <div class="row"><span class="row-label">Ocio y salidas</span><input class="row-input" type="number" id="g-oci" value="400" oninput="actualizarGastos()"></div>
+    <div class="row"><span class="row-label">Suscripciones</span><input class="row-input" type="number" id="g-sub" value="100" oninput="actualizarGastos()"></div>
+    <div class="row"><span class="row-label">Otros</span><input class="row-input" type="number" id="g-otr" value="800" oninput="actualizarGastos()"></div>
+  </div>
+</div>
+
+<!-- AHORRO -->
+<div id="sec-ahorro" class="section">
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">Ahorro mensual</div>
+      <div class="metric-value green" id="a-mensual">600 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Tasa de ahorro</div>
+      <div class="metric-value green" id="a-tasa">15,8%</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Estrategias recomendadas</div>
+    <div class="strategy-item">
+      <div class="strategy-icon" style="background:rgba(74,158,255,0.1);">🏦</div>
+      <div>
+        <div class="strategy-title">Cuenta remunerada conjunta</div>
+        <div class="strategy-sub">2,5–3% TAE, acceso inmediato. Ideal para el fondo de emergencia y el ahorro a corto plazo.</div>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="strategy-icon" style="background:rgba(78,203,141,0.1);">📈</div>
+      <div>
+        <div class="strategy-title">Fondos indexados (MSCI World)</div>
+        <div class="strategy-sub">Para el dinero que no necesitaréis en más de 3 años. Mayor rentabilidad a largo plazo.</div>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="strategy-icon" style="background:rgba(200,169,110,0.1);">⚡</div>
+      <div>
+        <div class="strategy-title">Domiciliar el ahorro el día de cobro</div>
+        <div class="strategy-sub">Automatizad la transferencia al ahorrar antes de gastar. El mejor hábito financiero.</div>
+      </div>
+    </div>
+    <div class="strategy-item">
+      <div class="strategy-icon" style="background:rgba(255,107,107,0.1);">🎯</div>
+      <div>
+        <div class="strategy-title">Regla 50/30/20</div>
+        <div class="strategy-sub">50% necesidades, 30% deseos, 20% ahorro. Marco simple para organizar los gastos.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Cómo llegar antes a la meta</div>
+    <div class="row"><span class="row-label">Si ahorráis 100€ más/mes</span><span class="row-value green" id="sim1">−6 meses</span></div>
+    <div class="row"><span class="row-label">Si ahorráis 200€ más/mes</span><span class="row-value green" id="sim2">−11 meses</span></div>
+    <div class="row"><span class="row-label">Si reducís ocio un 20%</span><span class="row-value green">+80 €/mes</span></div>
+  </div>
+</div>
+
+<!-- CALENDARIO -->
+<div id="sec-calendario" class="section">
+  <div class="card">
+    <div class="card-title">Plan de ahorro 2025 — toca para marcar</div>
+    <div class="cal-grid" id="cal-grid"></div>
+  </div>
+  <div class="card">
+    <div class="row"><span class="row-label">Meses completados</span><span class="row-value" id="cal-ok">0 / 12</span></div>
+    <div class="row"><span class="row-label">Total acumulado este año</span><span class="row-value green" id="cal-total">0 €</span></div>
+    <div class="row"><span class="row-label">Meses restantes</span><span class="row-value" id="cal-rest">12</span></div>
+  </div>
+</div>
+
+<!-- HIPOTECA -->
+<div id="sec-hipoteca" class="section">
+  <div class="card">
+    <div class="card-title">Simulador de hipoteca</div>
+    <div class="two-col">
+      <div class="input-group">
+        <label>Precio vivienda (€)</label>
+        <input type="number" id="hp-precio" value="200000" oninput="calcHipoteca()">
+      </div>
+      <div class="input-group">
+        <label>Entrada (€)</label>
+        <input type="number" id="hp-entrada" value="40000" oninput="calcHipoteca()">
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="input-group">
+        <label>Plazo (años)</label>
+        <input type="number" id="hp-plazo" value="25" oninput="calcHipoteca()">
+      </div>
+      <div class="input-group">
+        <label>Interés anual (%)</label>
+        <input type="number" id="hp-tipo" value="3.5" step="0.1" oninput="calcHipoteca()">
+      </div>
+    </div>
+  </div>
+
+  <div class="metric-grid">
+    <div class="metric">
+      <div class="metric-label">Cuota mensual</div>
+      <div class="metric-value accent" id="hp-cuota">800 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Capital prestado</div>
+      <div class="metric-value" id="hp-capital">160.000 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Total intereses</div>
+      <div class="metric-value red" id="hp-intereses">80.000 €</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">% de ingresos</div>
+      <div class="metric-value" id="hp-ratio">21%</div>
+    </div>
+  </div>
+
+  <div id="hp-alerta" class="h-alert ok">La cuota representa un porcentaje saludable de vuestros ingresos.</div>
+</div>
+
+<!-- CHAT IA -->
+<div id="sec-ia" class="section">
+  <div class="card">
+    <div class="card-title">Asesora financiera IA</div>
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg ai">Hola, soy vuestra asesora financiera IA. Conozco vuestra situación económica y estoy aquí para ayudaros a llegar a vuestra primera casa. ¿En qué puedo ayudaros hoy?</div>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-in" placeholder="Pregúntame lo que quieras..." onkeydown="if(event.key==='Enter')enviar()">
+      <button class="chat-send" onclick="enviar()">→</button>
+    </div>
+  </div>
+  <div class="quick-btns">
+    <button class="quick-btn" onclick="preg('¿Podemos permitirnos cenar fuera este fin de semana?')">¿Podemos cenar fuera?</button>
+    <button class="quick-btn" onclick="preg('¿Cómo reducir gastos sin discutir?')">Reducir gastos</button>
+    <button class="quick-btn" onclick="preg('¿En qué invertir nuestros ahorros?')">¿Dónde invertir?</button>
+    <button class="quick-btn" onclick="preg('¿Estamos ahorrando suficiente para nuestra meta?')">¿Vamos bien?</button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="bottom-btn active" onclick="show('objetivo',null,this)">
+    <span class="icon">🏠</span>
+    <span class="label">Objetivo</span>
+  </button>
+  <button class="bottom-btn" onclick="show('gastos',null,this)">
+    <span class="icon">💸</span>
+    <span class="label">Gastos</span>
+  </button>
+  <button class="bottom-btn" onclick="show('calendario',null,this)">
+    <span class="icon">📅</span>
+    <span class="label">Calendario</span>
+  </button>
+  <button class="bottom-btn" onclick="show('hipoteca',null,this)">
+    <span class="icon">🏦</span>
+    <span class="label">Hipoteca</span>
+  </button>
+  <button class="bottom-btn" onclick="show('ia',null,this)">
+    <span class="icon">🤖</span>
+    <span class="label">IA</span>
+  </button>
+</div>
+
+<script>
+const fmt = n => Math.round(n).toLocaleString('es-ES') + ' €';
+const fmtN = n => Math.round(n).toLocaleString('es-ES');
+const fmtPct = n => n.toFixed(1).replace('.', ',') + '%';
+
+function show(sec, navBtn, bottomBtn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + sec).classList.add('active');
+  if (navBtn) {
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    navBtn.classList.add('active');
+  }
+  if (bottomBtn) {
+    document.querySelectorAll('.bottom-btn').forEach(b => b.classList.remove('active'));
+    bottomBtn.classList.add('active');
+  }
+}
+
+function getIngresos() {
+  return (parseFloat(document.getElementById('s1').value) || 0) +
+         (parseFloat(document.getElementById('s2').value) || 0) +
+         (parseFloat(document.getElementById('s-otros').value) || 0);
+}
+
+function getGastos() {
+  return ['g-viv','g-ali','g-tra','g-oci','g-sub','g-otr']
+    .reduce((a, id) => a + (parseFloat(document.getElementById(id).value) || 0), 0);
+}
+
+function recalcular() {
+  const meta = parseFloat(document.getElementById('i-meta').value) || 40000;
+  const ahorrado = parseFloat(document.getElementById('i-ahorrado').value) || 0;
+  const mensual = parseFloat(document.getElementById('i-mensual').value) || 600;
+  const faltan = Math.max(0, meta - ahorrado);
+  const pct = Math.min(100, (ahorrado / meta) * 100);
+  const meses = mensual > 0 ? Math.ceil(faltan / mensual) : 999;
+
+  document.getElementById('h-meta').textContent = Math.round(meta).toLocaleString('es-ES') + '€';
+  document.getElementById('m-ahorrado').textContent = fmt(ahorrado);
+  document.getElementById('m-faltan').textContent = fmt(faltan);
+  document.getElementById('m-mensual').textContent = fmt(mensual);
+  document.getElementById('m-meses').textContent = fmtN(meses);
+  document.getElementById('m-pct').textContent = fmtPct(pct);
+  document.getElementById('prog-fill').style.width = pct + '%';
+
+  const d = new Date();
+  d.setMonth(d.getMonth() + meses);
+  document.getElementById('h-fecha').textContent = d.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+
+  const sim1 = Math.ceil(faltan / (mensual + 100));
+  const sim2 = Math.ceil(faltan / (mensual + 200));
+  document.getElementById('sim1').textContent = '−' + (meses - sim1) + ' meses';
+  document.getElementById('sim2').textContent = '−' + (meses - sim2) + ' meses';
+
+  actualizarSemaforo();
+  buildCalendar();
+}
+
+function actualizarSemaforo() {
+  const ingresos = getIngresos();
+  const gastos = getGastos();
+  const ratio = ingresos > 0 ? gastos / ingresos : 1;
+  const box = document.getElementById('semaforo');
+  const txt = document.getElementById('semaforo-txt');
+  box.className = 'semaforo';
+  if (ratio < 0.70) { box.classList.add('verde'); txt.textContent = 'Vais muy bien este mes, seguid así'; }
+  else if (ratio < 0.85) { box.classList.add('amarillo'); txt.textContent = 'Cuidado, los gastos se acercan al límite'; }
+  else { box.classList.add('rojo'); txt.textContent = 'Atención, estáis gastando demasiado este mes'; }
+}
+
+function actualizarIngresos() {
+  const i1 = parseFloat(document.getElementById('s1').value) || 0;
+  const i2 = parseFloat(document.getElementById('s2').value) || 0;
+  const otros = parseFloat(document.getElementById('s-otros').value) || 0;
+  const total = i1 + i2 + otros;
+  const mensual = parseFloat(document.getElementById('i-mensual').value) || 600;
+  const p1 = total > 0 ? (i1 / total) * 100 : 50;
+  const p2 = total > 0 ? (i2 / total) * 100 : 50;
+
+  document.getElementById('ing-total').textContent = fmt(total);
+  document.getElementById('ing-display1').textContent = fmt(i1);
+  document.getElementById('ing-display2').textContent = fmt(i2);
+  document.getElementById('ing-label1').textContent = document.getElementById('n1').value || 'Persona 1';
+  document.getElementById('ing-label2').textContent = document.getElementById('n2').value || 'Persona 2';
+  document.getElementById('pct1').textContent = fmtPct(p1);
+  document.getElementById('pct2').textContent = fmtPct(p2);
+  document.getElementById('aport1').textContent = fmt(mensual * p1 / 100);
+  document.getElementById('aport2').textContent = fmt(mensual * p2 / 100);
+
+  actualizarGastos();
+}
+
+function actualizarGastos() {
+  const ingresos = getIngresos();
+  const gastos = getGastos();
+  const disp = ingresos - gastos;
+  const ratio = ingresos > 0 ? (gastos / ingresos) * 100 : 0;
+  const pctAhorro = ingresos > 0 ? ((disp / ingresos) * 100) : 0;
+
+  document.getElementById('g-total').textContent = fmt(gastos);
+  document.getElementById('g-disponible').textContent = fmt(disp);
+  document.getElementById('g-ratio').textContent = fmtPct(ratio);
+  document.getElementById('g-pct-ahorro').textContent = fmtPct(Math.max(0, pctAhorro));
+
+  const mensual = parseFloat(document.getElementById('i-mensual').value) || 600;
+  const ingresos2 = getIngresos();
+  const tasa = ingresos2 > 0 ? (mensual / ingresos2) * 100 : 0;
+  document.getElementById('a-mensual').textContent = fmt(mensual);
+  document.getElementById('a-tasa').textContent = fmtPct(tasa);
+
+  actualizarSemaforo();
+}
+
+function calcHipoteca() {
+  const precio = parseFloat(document.getElementById('hp-precio').value) || 200000;
+  const entrada = parseFloat(document.getElementById('hp-entrada').value) || 40000;
+  const plazo = parseFloat(document.getElementById('hp-plazo').value) || 25;
+  const tipo = parseFloat(document.getElementById('hp-tipo').value) || 3.5;
+  const capital = precio - entrada;
+  const r = tipo / 100 / 12;
+  const n = plazo * 12;
+  const cuota = r > 0 ? capital * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1) : capital / n;
+  const totalPagado = cuota * n;
+  const intereses = totalPagado - capital;
+  const ingresos = getIngresos();
+  const ratioPct = ingresos > 0 ? (cuota / ingresos) * 100 : 0;
+
+  document.getElementById('hp-cuota').textContent = fmt(cuota);
+  document.getElementById('hp-capital').textContent = fmt(capital);
+  document.getElementById('hp-intereses').textContent = fmt(intereses);
+  document.getElementById('hp-ratio').textContent = Math.round(ratioPct) + '%';
+
+  const alerta = document.getElementById('hp-alerta');
+  if (ratioPct <= 30) {
+    alerta.className = 'h-alert ok';
+    alerta.textContent = 'La cuota (' + Math.round(ratioPct) + '% de ingresos) está dentro del límite recomendado del 30%. Podríais afrontarla.';
+  } else {
+    alerta.className = 'h-alert warn';
+    alerta.textContent = 'La cuota supera el 30% de vuestros ingresos (' + Math.round(ratioPct) + '%). Valorad aumentar la entrada o alargar el plazo.';
+  }
+}
+
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const calDone = new Array(12).fill(false);
+const mesActual = new Date().getMonth();
+
+function buildCalendar() {
+  const g = document.getElementById('cal-grid');
+  const ahorro = parseFloat(document.getElementById('i-mensual').value) || 600;
+  g.innerHTML = '';
+  MESES.forEach((m, i) => {
+    const d = document.createElement('div');
+    d.className = 'cal-month' + (calDone[i] ? ' done' : '') + (i === mesActual ? ' current' : '');
+    d.innerHTML = `<div class="cal-name">${m}</div><div class="cal-amount">${Math.round(ahorro)}€</div><div class="cal-check">${calDone[i] ? '✓' : ''}</div>`;
+    d.onclick = () => { calDone[i] = !calDone[i]; buildCalendar(); };
+    g.appendChild(d);
+  });
+  const ok = calDone.filter(Boolean).length;
+  document.getElementById('cal-ok').textContent = ok + ' / 12';
+  document.getElementById('cal-total').textContent = fmt(ok * ahorro);
+  document.getElementById('cal-rest').textContent = (12 - ok);
+}
+
+async function enviar() {
+  const inp = document.getElementById('chat-in');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
+  const msgs = document.getElementById('chat-msgs');
+
+  const uMsg = document.createElement('div');
+  uMsg.className = 'msg user';
+  uMsg.textContent = q;
+  msgs.appendChild(uMsg);
+
+  const loadMsg = document.createElement('div');
+  loadMsg.className = 'msg ai loading';
+  loadMsg.textContent = 'Analizando vuestra situación...';
+  msgs.appendChild(loadMsg);
+  msgs.scrollTop = msgs.scrollHeight;
+
+  const i1 = document.getElementById('s1').value || 2200;
+  const i2 = document.getElementById('s2').value || 1600;
+  const gastos = getGastos();
+  const meta = document.getElementById('i-meta').value || 40000;
+  const ahorrado = document.getElementById('i-ahorrado').value || 8200;
+  const mensual = document.getElementById('i-mensual').value || 600;
+  const nombre1 = document.getElementById('n1').value || 'Persona 1';
+  const nombre2 = document.getElementById('n2').value || 'Persona 2';
+
+  const sistema = `Eres una asesora financiera empática y cercana, especializada en ayudar a parejas a comprar su primera vivienda en España. Hablas en tono cálido, como una amiga experta en finanzas. Usas el tuteo y hablas siempre en plural (vosotros). Respondes de forma concisa, máximo 3-4 frases. Sin asteriscos ni markdown. Sin tecnicismos innecesarios.
+
+Datos reales de la pareja:
+- ${nombre1} gana ${i1}€/mes netos
+- ${nombre2} gana ${i2}€/mes netos  
+- Gastos totales mensuales: ${gastos}€
+- Meta de ahorro para entrada de vivienda: ${meta}€
+- Ya tienen ahorrado: ${ahorrado}€
+- Ahorran ${mensual}€/mes juntos`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: sistema,
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+    const data = await res.json();
+    loadMsg.classList.remove('loading');
+    loadMsg.textContent = data.content[0].text;
+  } catch (e) {
+    loadMsg.classList.remove('loading');
+    loadMsg.textContent = 'Hubo un error al conectar. Inténtalo de nuevo.';
+  }
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function preg(p) {
+  document.getElementById('chat-in').value = p;
+  enviar();
+}
+
+recalcular();
+actualizarIngresos();
+calcHipoteca();
+buildCalendar();
+</script>
+</body>
+</html>
